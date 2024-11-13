@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const bcrypt = require("bcrypt");
 const userSchema = new mongoose.Schema(
   {
     firstName: {
@@ -40,11 +40,21 @@ const userSchema = new mongoose.Schema(
       trim: true,
       minlength: [8, "Password must be at least 8 characters long"],
       maxlength: [30, "Password must be at most 30 characters long"],
+      // regex
+      // match: [
+      //   /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
+      //   "Password must contain at least one uppercase letter, one lowercase letter, one number and one special character",
+      // ],
     },
   },
   {
     timestamps: true,
   }
 );
+
+userSchema.pre("save", async function () {
+  console.log(this);
+  this.password = await bcrypt.hash(this.password, 10);
+});
 
 module.exports = mongoose.model("User", userSchema);
