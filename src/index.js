@@ -5,13 +5,15 @@ const connectDB = require("./config/dbConfig");
 const User = require("./schema/userSchema");
 const userRouter = require("./routes/userRoute");
 const cartRouter = require("./routes/cartRoute");
+const authRouter = require("./routes/authRoute");
 const app = express();
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.text());
 app.use("/users", userRouter);
 app.use("/carts", cartRouter);
+app.use("/auth", authRouter);
 const PORT = ServerConfig.PORT;
 
 app.listen(PORT, async () => {
