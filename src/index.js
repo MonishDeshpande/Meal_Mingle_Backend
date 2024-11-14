@@ -8,6 +8,9 @@ const cartRouter = require("./routes/cartRoute");
 const authRouter = require("./routes/authRoute");
 const cookieParser = require("cookie-parser");
 const { isLoggedIn } = require("./validation/authValidator");
+const uploader = require("./middlewares/multerMiddleware");
+const cloduinary = require("./config/cloudinaryConfig");
+const fs = require("fs/promises");
 
 // Flow -> index -> route -> controller -> service -> repository -> schema
 const app = express();
@@ -23,6 +26,15 @@ app.get("/ping", isLoggedIn, (req, res) => {
   console.log(req.body);
   console.log(req.cookies);
   res.json({ message: "Pong" });
+});
+
+// Photo api cloduinary check --- >> multer
+app.post("/photo", uploader.single("incommingFile"), async (req, res) => {
+  console.log(req.file);
+  const result = await cloduinary.uploader.upload(req.file.path);
+  console.log("result from cloudinary ", result);
+  await fs.unlink(req.file.path);
+  res.json({ message: "ok" });
 });
 
 const PORT = ServerConfig.PORT;
