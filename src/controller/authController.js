@@ -5,11 +5,15 @@ async function login(req, res) {
     const loginPayload = req.body;
 
     const response = await loginUser(loginPayload);
-
+    res.cookie("authToken", response, {
+      httpOnly: true,
+      secure: false,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
     return res.status(200).json({
       success: true,
       message: "Logged in successfully",
-      data: response,
+      data: {},
       error: {},
     });
   } catch (error) {
